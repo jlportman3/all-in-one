@@ -1,0 +1,11 @@
+{$NC_DOMAIN} {
+    reverse_proxy localhost:11000
+}
+
+{$NC_DOMAIN}:8443 {
+    reverse_proxy https://localhost:8080 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
