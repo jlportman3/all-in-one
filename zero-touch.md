@@ -11,7 +11,9 @@ The `zero-touch.sh` script starts Nextcloud AIO with a bundled Caddy reverse pro
 When the script is executed it verifies these packages and installs them using `apt` and the official Docker installation script if necessary.
 
 ## Usage
-Provide your domain as an environment variable or as the first argument:
+Run the script and provide your domain when prompted. You can also set the
+domain via the `NC_DOMAIN` environment variable or pass it as the first
+argument:
 
 ```bash
 NC_DOMAIN=example.com ./zero-touch.sh

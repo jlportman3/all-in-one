@@ -25,12 +25,31 @@ install_packages() {
 install_packages
 
 # This script starts Nextcloud AIO together with a Caddy reverse proxy.
-# Provide the domain via the NC_DOMAIN environment variable or as the first argument.
+# If NC_DOMAIN is not set in the environment or as the first argument,
+# the script will prompt for it and store the value inside a `.env` file
+# located in the current working directory.
+
+ENV_FILE=".env"
+if [ -f "$ENV_FILE" ]; then
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
+fi
 
 NC_DOMAIN="${1:-${NC_DOMAIN:-}}"
 if [ -z "$NC_DOMAIN" ]; then
-    echo "Usage: NC_DOMAIN=<your-domain> $0" >&2
+    read -rp "Enter the domain for Nextcloud: " NC_DOMAIN
+fi
+
+if [ -z "$NC_DOMAIN" ]; then
+    echo "No domain provided" >&2
     exit 1
+fi
+
+# Persist the domain in the .env file
+if [ -f "$ENV_FILE" ] && grep -q '^NC_DOMAIN=' "$ENV_FILE"; then
+    sed -i "s/^NC_DOMAIN=.*/NC_DOMAIN=$NC_DOMAIN/" "$ENV_FILE"
+else
+    echo "NC_DOMAIN=$NC_DOMAIN" >> "$ENV_FILE"
 fi
 
 # Create Caddyfile configuration
