@@ -1,6 +1,29 @@
 #!/bin/bash
 set -euo pipefail
 
+# Install required packages on a fresh Ubuntu system
+install_packages() {
+    if ! command -v curl >/dev/null 2>&1; then
+        sudo apt update -y
+        sudo apt install -y curl
+    fi
+
+    if ! command -v python3 >/dev/null 2>&1; then
+        sudo apt update -y
+        sudo apt install -y python3
+    fi
+
+    if ! command -v docker >/dev/null 2>&1; then
+        curl -fsSL https://get.docker.com | sudo sh
+    fi
+
+    if ! docker compose version >/dev/null 2>&1; then
+        sudo apt install -y docker-compose-plugin
+    fi
+}
+
+install_packages
+
 # This script starts Nextcloud AIO together with a Caddy reverse proxy.
 # Provide the domain via the NC_DOMAIN environment variable or as the first argument.
 
